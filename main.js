@@ -5,6 +5,7 @@ const { app, BrowserWindow, Menu } = require('electron');
 const isDev = process.env.NODE_ENV !== 'development';
 const isMac = process.platform == 'darwin';
 
+// Main Window
 function createMainWindow() {
   const mainWindow = new BrowserWindow({
     title: 'Image Resizer',
@@ -12,7 +13,7 @@ function createMainWindow() {
     height: 600,
   });
 
-  // open devtools if in dev environment
+  // open devtools automatically if in dev environment
   if (isDev) {
     mainWindow.webContents.openDevTools();
   }
@@ -27,6 +28,8 @@ app.whenReady().then(() => {
   const mainMenu = Menu.buildFromTemplate(menu);
   Menu.setApplicationMenu(mainMenu);
 
+  // when the app is ready, create the window
+  // and open when none are open on MacOS
   app.on('activate', () => {
     if (BrowserWindow.getAllWindows().length === 0) {
       createMainWindow();
@@ -49,6 +52,7 @@ const menu = [
   },
 ];
 
+// quit on all platforms when all windows are closed
 app.on('window-all-closed', () => {
   if (!isMac) {
     app.quit();
