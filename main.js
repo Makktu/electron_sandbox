@@ -11,6 +11,11 @@ function createMainWindow() {
     title: 'Image Resizer',
     width: isDev ? 1000 : 500,
     height: 600,
+    webPreferences: {
+      contextIsolation: true,
+      nodeIntegration: true,
+      preload: path.join(__dirname, 'preload.js'),
+    },
   });
 
   // open devtools automatically if in dev environment
@@ -28,6 +33,7 @@ function createAboutWindow() {
     title: 'About Image Resizer',
     width: 300,
     height: 300,
+    resizable: false,
   });
 
   // check About window already open & if so close it
