@@ -21,6 +21,23 @@ function createMainWindow() {
   mainWindow.loadFile(path.join(__dirname, './renderer/index.html'));
 }
 
+// create About window
+
+function createAboutWindow() {
+  const aboutWindow = new BrowserWindow({
+    title: 'About Image Resizer',
+    width: 300,
+    height: 300,
+  });
+
+  // check About window already open & if so close it
+  // if (aboutWindow) {
+  //   aboutWindow.close();
+  // }
+
+  aboutWindow.loadFile(path.join(__dirname, './renderer/about.html'));
+}
+
 app.whenReady().then(() => {
   createMainWindow();
 
@@ -38,18 +55,35 @@ app.whenReady().then(() => {
 });
 
 const menu = [
-  {
-    label: 'File',
-    submenu: [
-      {
-        label: 'Quit',
-        click: () => {
-          app.quit();
+  ...(isMac
+    ? [
+        {
+          label: app.name,
+          submenu: [
+            {
+              label: 'About',
+              click: createAboutWindow,
+            },
+          ],
         },
-        accelerator: 'CMD/CTRL+W',
-      },
-    ],
+      ]
+    : []),
+  {
+    role: 'fileMenu',
   },
+  ...(!isMac
+    ? [
+        {
+          label: 'Help',
+          submenu: [
+            {
+              label: 'About',
+              click: createAboutWindow,
+            },
+          ],
+        },
+      ]
+    : []),
 ];
 
 // quit on all platforms when all windows are closed
