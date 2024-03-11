@@ -1,5 +1,3 @@
-const { ipcRenderer } = require('electron');
-
 const form = document.querySelector('#img-form');
 const img = document.querySelector('#img');
 const outputPath = document.querySelector('#output-path');
@@ -34,22 +32,30 @@ function loadImage(e) {
 function sendImage(e) {
   e.preventDefault();
 
+  if (!img.files[0]) {
+    alertMsg('Please upload an image...', 'error');
+  }
+
   const width = widthInput.value;
   const height = heightInput.value;
   const imgPath = img.files[0].path;
 
   if (width == '' || height == '') {
-    alertMsg('Please fill in the height and width values!', 'error');
+    alertMsg('>>> Please fill in the height and width values !    ', 'error');
     return;
   }
 
-  if (!img.files[0]) {
-    alertMsg('Please upload an image...', 'error');
-  }
-
   // send to main using IPCRenderer
-  ipcRenderer.send('image:resize', { imgPath, width, height });
+  ipcRenderer.send('image:resize', { imgPath, height, width });
 }
+
+// catch the image:done event
+ipcRenderer.on('image:done', () => {
+  alertMsg(
+    `Done! Image resized to ${widthInput.value} x ${heightInput.value}`,
+    'success'
+  );
+});
 
 // check that file is an image file
 function isFileImage(file) {
